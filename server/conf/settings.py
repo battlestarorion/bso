@@ -2,7 +2,7 @@
 Evennia settings file.
 
 The available options are found in the default settings file found
-here:
+ here:
 
 /cygdrive/a/git/evennia-mush/evennia/evennia/settings_default.py
 
@@ -55,6 +55,18 @@ WEBSOCKET_CLIENT_ENABLED = True
 WEBSOCKET_CLIENT_PORT = 4005
 # Internal Server-Portal port. Not visible.
 AMP_PORT = 4006
+
+# Custom settings
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'evennia',
+        'USER': 'evennia',
+        'PASSWORD': 'AdventureTime05',
+        'HOST': 'localhost',
+        'PORT': ''    # use default
+    }
+}
 
 ######################################################################
 # Settings given in secret_settings.py override those in this file.
