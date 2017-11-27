@@ -99,3 +99,10 @@ ENV/
 
 # mypy
 .mypy_cache/
+
+# server instance files
+*.pid
+*.restart
+
+# static site files
+/web/static
