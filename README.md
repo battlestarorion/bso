@@ -38,3 +38,8 @@ Evennia's documentation is here:
 https://github.com/evennia/evennia/wiki.
 
 Enjoy!
+
+--------
+
+Communication:
+- Discord - https://discord.gg/6FApBmK
