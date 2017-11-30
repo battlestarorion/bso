@@ -32,7 +32,7 @@ from evennia.settings_default import *
 ######################################################################
 
 # This is the name of your game. Make it catchy!
-SERVERNAME = "core"
+SERVERNAME = "The Foxhole"
 
 # Server ports. If enabled and marked as "visible", the port
 # should be visible to the outside world on a production server.
@@ -43,6 +43,7 @@ TELNET_ENABLED = True
 TELNET_PORTS = [4000]
 # (proxy, internal). Only proxy should be visible.
 WEBSERVER_ENABLED = True
+ALLOWED_HOSTS = ['.thecryingbeard.com', 'localhost', '127.0.0.1', '[::1]']
 WEBSERVER_PORTS = [(4001, 4002)]
 # Telnet+SSL ports, for supporting clients. Visible.
 SSL_ENABLED = False
@@ -56,7 +57,10 @@ WEBSOCKET_CLIENT_PORT = 4005
 # Internal Server-Portal port. Not visible.
 AMP_PORT = 4006
 
-# Custom settings
+######################################################################
+# Evennia Database config
+######################################################################
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
@@ -69,9 +73,53 @@ DATABASES = {
 }
 
 ######################################################################
+# Evennia pluggable modules
+######################################################################
+
+SEARCH_MULTIMATCH_REGEX = r"(?P<name>.*)-(?P<number>[0-9]+)"
+SEARCH_MULTIMATCH_TEMPLATE = " {name}-{number}{aliases}{info}\n"
+
+######################################################################
+# Game Time setup
+######################################################################
+
+TIME_FACTOR = 1.0
+
+######################################################################
+# Inlinefunc
+######################################################################
+
+INLINEFUNC_ENABLED = True
+
+######################################################################
+# Default Account setup and access
+######################################################################
+
+MULTISESSION_MODE = 3
+MAX_NR_CHARACTERS = 0
+
+######################################################################
+# In-game Channels created from server start
+######################################################################
+# Re-define Public channel aliases.  We do not modify the original
+#list in case indices change upstream.
+DEFAULT_CHANNELS = [
+    # public channel
+    {"key": "Public",
+     "aliases": ('pub'),
+     "desc": "Public discussion",
+     "locks": "control:perm(Admin);listen:all();send:all()"},
+    # connection/mud info
+    {"key": "MudInfo",
+     "aliases": "",
+     "desc": "Connection log",
+     "locks": "control:perm(Developer);listen:perm(Admin);send:false()"}
+]
+
+######################################################################
 # Settings given in secret_settings.py override those in this file.
 ######################################################################
 try:
     from server.conf.secret_settings import *
 except ImportError:
-    print "secret_settings.py file not found or failed to import."
+    print("secret_settings.py file not found or failed to import.")
