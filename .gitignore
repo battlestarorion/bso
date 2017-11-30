@@ -106,3 +106,6 @@ ENV/
 
 # static site files
 /web/static
+
+# ide
+/.idea
