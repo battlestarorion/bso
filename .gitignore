@@ -109,3 +109,6 @@ ENV/
 
 # ide
 /.idea
+
+# evennia logs
+/logs
