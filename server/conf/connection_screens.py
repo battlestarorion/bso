@@ -45,7 +45,7 @@ CONNECTION_PARTS = { 'default': """
     }
 
 CONNECTION_SCREEN = """
-{}
+{top_border}
  ___    __      
   ||he   ||-oxhole
    **    *  *  *
@@ -60,13 +60,18 @@ CONNECTION_SCREEN = """
            *    
    *        *   
                 
-{}
+{divider}
 
-{}
-{}
-{}
-{}""" \
-    .format(CONNECTION_PARTS['border_heavy'], CONNECTION_PARTS['custom_divider'], CONNECTION_PARTS['login_footer'], CONNECTION_PARTS['border_light'], CONNECTION_PARTS['version_footer'], CONNECTION_PARTS['border_heavy'])
+{login_instructions}
+{divider2}
+{version}
+{bottom_border}""" \
+    .format(top_border=CONNECTION_PARTS['border_heavy'],
+            divider=CONNECTION_PARTS['custom_divider'],
+            login_instructions=CONNECTION_PARTS['login_footer'],
+            divider2=CONNECTION_PARTS['border_light'],
+            version=CONNECTION_PARTS['version_footer'],
+            bottom_border=CONNECTION_PARTS['border_heavy'])
 
 #CONNECTION_SCREEN = """
 #|b==============================================================|n
