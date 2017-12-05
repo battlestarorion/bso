@@ -17,6 +17,7 @@ own cmdsets by inheriting from them or directly from `evennia.CmdSet`.
 from evennia import default_cmds
 from evennia.commands.default.general import CmdNick
 from commands.default.general import AccountAwareCmdNick
+from commands.default.unloggedin import CmdUnconnectedHelp
 
 class CharacterCmdSet(default_cmds.CharacterCmdSet):
     """
@@ -72,6 +73,7 @@ class UnloggedinCmdSet(default_cmds.UnloggedinCmdSet):
         #
         # any commands you add below will overload the default ones.
         #
+        self.add(CmdUnconnectedHelp())
 
 
 class SessionCmdSet(default_cmds.SessionCmdSet):
