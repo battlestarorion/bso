@@ -3,7 +3,7 @@ General Character commands usually available to all characters.
 """
 from evennia.utils import utils, evtable
 from evennia.typeclasses.attributes import NickTemplateInvalid
-from evennia.commands.default.general import CmdNick
+from evennia.commands.default.general import CmdNick, CmdPose
 
 
 class AccountAwareCmdNick(CmdNick):
@@ -107,3 +107,51 @@ class AccountAwareCmdNick(CmdNick):
                 _, _, nickvalue, replacement = nickobj.value
                 table.add_row(str(inum + 1), nickobj.db_category, nickvalue, replacement)
             return table
+
+
+class CmdPose(CmdPose):
+    """
+    strike a pose
+
+    Usage:
+      pose <pose text>
+      pose's <pose text>
+
+    Aliases:
+      :<pose text> => Character <pose text>
+      ;<pose text> => Character<pose text>
+      \\<pose text> => <pose text>
+
+    Example:
+      pose is standing by the wall, smiling.
+       -> others will see:
+      Tom is standing by the wall, smiling.
+
+    Describe an action being taken. The pose text will
+    automatically begin with your name.
+    """
+    aliases = CmdPose.aliases + [';', '\\\\']
+
+    def parse(self):
+        """
+        Custom parse the cases where the emote
+        starts with some special letter, such
+        as 's, at which we don't want to separate
+        the caller's name and the emote with a
+        space.
+        """
+        args = self.args
+        if args and not args[0] in ["'", ":"] and self.cmdstring not in [';', '\\\\']:
+            args = " %s" % args.strip()
+        self.args = args
+
+    def func(self):
+        if not self.args:
+            # Super func handles error message.
+            pass
+        elif self.cmdstring == "\\\\":
+            msg = self.args
+            self.caller.location.msg_contents(text=(msg, {"type": "pose"}),
+                                              from_obj=self.caller)
+            return
+        super(CmdPose, self).func()
