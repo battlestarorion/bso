@@ -33,6 +33,7 @@ class CmdPage(CmdPage):
     is sent to the last account(s) paged.
     """
     aliases = CmdPage.aliases + ['p', 'pages']
+    arg_regex = r"\s.+|/.+|$"
 
     def func(self):
         """Implement function using the Msg methods"""
