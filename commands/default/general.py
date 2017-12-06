@@ -7,9 +7,7 @@ from evennia.commands.default.general import CmdNick
 
 
 class AccountAwareCmdNick(CmdNick):
-    """
-    Character nicks that are able to list their global nicks from Account
-    """
+    __doc__ = CmdNick.__doc__
 
     # Copy/pasted/modified from upstream.
     # This is done so we have complete control over the display and avoid situations where the account nicks display but
