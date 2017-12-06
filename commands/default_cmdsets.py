@@ -18,6 +18,8 @@ from evennia import default_cmds
 from evennia.commands.default.general import CmdNick
 from commands.default.general import AccountAwareCmdNick
 from commands.default.unloggedin import CmdUnconnectedHelp
+from commands.default.comms import CmdPage
+
 
 class CharacterCmdSet(default_cmds.CharacterCmdSet):
     """
@@ -56,6 +58,7 @@ class AccountCmdSet(default_cmds.AccountCmdSet):
         # any commands you add below will overload the default ones.
         #
         self.add(CmdNick())
+        self.add(CmdPage())
 
 
 class UnloggedinCmdSet(default_cmds.UnloggedinCmdSet):
