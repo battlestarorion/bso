@@ -2,6 +2,7 @@
 General Character commands usually available to all characters.
 """
 from evennia.utils import utils, evtable
+from evennia.typeclasses.attributes import NickTemplateInvalid
 from evennia.commands.default.general import CmdNick
 
 
@@ -15,7 +16,6 @@ class AccountAwareCmdNick(CmdNick):
     # the character ones return 'No nicks defined.' which looks like an error.
     def func(self):
         """Create the nickname"""
-
         caller = self.caller
         switches = self.switches
         nicktypes = [switch for switch in switches if switch in ("object", "account", "inputline")] or ["inputline"]
