@@ -12,6 +12,30 @@ from evennia.comms.models import Msg
 from evennia.utils import create, utils
 
 
+def parse_inline_pose(raw_pose=None):
+    """
+    Helper function to process inline supported pose syntax (', :, ;, ,, \\) such as 'page :my emote'
+    Can be used to process straight up pose command syntax by passing the cmdstring
+    Returns a dictionary: {"cmd": "<pose_cmd>", "body": "<parsed_message_body>"}
+    """
+    # To reduce str.startswith() calls
+    cmd = raw_pose[:1]
+    msg_body = raw_pose
+
+    # Handle command that is > one character
+    if raw_pose.startswith('\\\\'):
+        cmd = '\\\\'
+        msg_body = raw_pose[2:]
+    elif cmd == ';':
+        msg_body = raw_pose[1:]
+    elif cmd == ':':
+        msg_body = " %s" % raw_pose[1:].strip()
+    # raw_pose does not have inline pose
+    elif cmd not in [",", "'"]:
+        cmd = None
+    return {"cmd": cmd, "body": msg_body}
+
+
 class CmdPage(CmdPage):
     """
     send a private message to another account
