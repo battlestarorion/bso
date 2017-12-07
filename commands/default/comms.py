@@ -138,18 +138,28 @@ class CmdPage(CmdPage):
             return
 
         header = "|wAccount|n |c%s|n |wpages:|n" % caller.key
+        # Handle non-mux page-last recipients style of 'page <msg>'
         if self.lhs and not self.rhs:
             message = self.lhs
         else:
             message = self.rhs
 
-        # if message begins with a :, we assume it is a 'page-pose'
-        if message.startswith(":"):
-            message = "%s %s" % (caller.key, message.strip(':').strip())
+        # Parse any inline supported posing into parts
+        message_parts = parse_inline_pose(message)
+
+        if not message_parts["cmd"] or message_parts["cmd"] == '\\\\':
+            message = message_parts["body"]
+        # Add an actor
+        else:
+            message = "%s%s" % (caller.key, message_parts["body"])
 
         # create the persistent message object
         create.create_message(caller, message,
                               receivers=recobjs)
+
+        # Add wrapping punctuation
+        if not message_parts["cmd"]:
+            message = "'%s'" % message
 
         # tell the accounts they got a message.
         received = []
@@ -167,4 +177,4 @@ class CmdPage(CmdPage):
                 received.append("|c%s|n" % pobj.name)
         if rstrings:
             self.msg("\n".join(rstrings))
-        self.msg("You paged %s with: '%s'." % (", ".join(received), message))
+        self.msg("You paged %s with: %s" % (", ".join(received), message))
