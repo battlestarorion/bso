@@ -13,6 +13,10 @@ from evennia.utils import create, utils
 
 
 class InlinePoseHelper(object):
+    """
+    The following pose commands are supported as inline message prefixes:
+       ', ;, :, \\, and ,
+    """
     @staticmethod
     def parse(raw_pose=None):
         """
@@ -41,7 +45,7 @@ class InlinePoseHelper(object):
     def add_actor(parsed=None, actor=None):
         """
         Takes a dictionary provided by cls.parse
-        Returns dictionary with actor if the caller command requires it
+        Returns parsed dictionary unchanged or with actor prefixed to the body if necessary
         """
         if not actor:
             actor = ''
@@ -54,7 +58,7 @@ class InlinePoseHelper(object):
 
 
 class CmdPage(CmdPage):
-    """
+    __doc__ = """
     send a private message to another account
 
     Usage:
@@ -72,10 +76,7 @@ class CmdPage(CmdPage):
     Send a message to target user (if online). If no
     account(s) are given, but a message is provided, the message
     is sent to the last account(s) paged.
-
-    The following pose commands are supported as message prefixes:
-       ', ;, :, \\, and ,
-    """
+    """ + InlinePoseHelper.__doc__
     aliases = CmdPage.aliases + ['p', 'pages']
     arg_regex = r"\s.+|/.+|$"
 
