@@ -55,6 +55,9 @@ class CmdPage(CmdPage):
     Send a message to target user (if online). If no
     account(s) are given, but a message is provided, the message
     is sent to the last account(s) paged.
+
+    The following pose commands are supported as message prefixes:
+       ', ;, :, \\, and ,
     """
     aliases = CmdPage.aliases + ['p', 'pages']
     arg_regex = r"\s.+|/.+|$"
