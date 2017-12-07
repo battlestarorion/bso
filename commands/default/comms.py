@@ -12,28 +12,45 @@ from evennia.comms.models import Msg
 from evennia.utils import create, utils
 
 
-def parse_inline_pose(raw_pose=None):
-    """
-    Helper function to process inline supported pose syntax (', :, ;, ,, \\) such as 'page :my emote'
-    Can be used to process straight up pose command syntax by passing the cmdstring
-    Returns a dictionary: {"cmd": "<pose_cmd>", "body": "<parsed_message_body>"}
-    """
-    # To reduce str.startswith() calls
-    cmd = raw_pose[:1]
-    msg_body = raw_pose
+class InlinePoseHelper(object):
+    @staticmethod
+    def parse(raw_pose=None):
+        """
+        Parse inline supported pose syntax (', :, ;, ,, \\) such as 'page :my emote'
+        Can be used to parse straight up pose command syntax by passing the cmdstring
+        Returns a dictionary: {"cmd": "<pose_cmd>", "body": "<parsed_message_body>"}
+        """
+        # To reduce str.startswith() calls
+        cmd = raw_pose[:1]
+        body = raw_pose
 
-    # Handle command that is > one character
-    if raw_pose.startswith('\\\\'):
-        cmd = '\\\\'
-        msg_body = raw_pose[2:]
-    elif cmd == ';':
-        msg_body = raw_pose[1:]
-    elif cmd == ':':
-        msg_body = " %s" % raw_pose[1:].strip()
-    # raw_pose does not have inline pose
-    elif cmd not in [",", "'"]:
-        cmd = None
-    return {"cmd": cmd, "body": msg_body}
+        # Handle command that is > one character
+        if raw_pose.startswith('\\\\'):
+            cmd = '\\\\'
+            body = raw_pose[2:]
+        elif cmd == ';':
+            body = raw_pose[1:]
+        elif cmd == ':':
+            body = " %s" % raw_pose[1:].strip()
+        # raw_pose does not have inline pose
+        elif cmd not in [",", "'"]:
+            cmd = None
+        return {"cmd": cmd, "body": body}
+
+    @staticmethod
+    def add_actor(parsed=None, actor=None):
+        """
+        Takes a dictionary provided by cls.parse
+        Returns dictionary with actor if the caller command requires it
+        """
+        if not actor:
+            actor = ''
+
+        if not parsed["cmd"] or parsed["cmd"] == '\\\\':
+            return parsed
+        # Add an actor
+        parsed["body"] = "%s%s" % (actor, parsed["body"])
+        return parsed
 
 
 class CmdPage(CmdPage):
@@ -147,21 +164,18 @@ class CmdPage(CmdPage):
         else:
             message = self.rhs
 
-        # Parse any inline supported posing into parts
-        message_parts = parse_inline_pose(message)
+        # Handle supported inline poses
+        parts = InlinePoseHelper.parse(message)
+        parts = InlinePoseHelper.add_actor(parts, caller.key)
 
-        if not message_parts["cmd"] or message_parts["cmd"] == '\\\\':
-            message = message_parts["body"]
-        # Add an actor
-        else:
-            message = "%s%s" % (caller.key, message_parts["body"])
+        message = parts['body']
 
         # create the persistent message object
         create.create_message(caller, message,
                               receivers=recobjs)
 
         # Add wrapping punctuation
-        if not message_parts["cmd"]:
+        if not parts["cmd"]:
             message = "'%s'" % message
 
         # tell the accounts they got a message.
