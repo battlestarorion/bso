@@ -42,18 +42,31 @@ class InlinePoseHelper(object):
         return {"cmd": cmd, "body": body}
 
     @staticmethod
-    def add_actor(parsed=None, actor=None):
+    def prefix_actor_to_body(parsed=None, actor=None):
         """
-        Takes a dictionary provided by cls.parse
-        Returns parsed dictionary unchanged or with actor prefixed to the body if necessary
+        Takes a dictionary provided by cls.parse and the name of the actor
+        Returns parsed dictionary unchanged or with actor prefixed to the body
+        if necessary
         """
         if not actor:
             actor = ''
 
-        if not parsed["cmd"] or parsed["cmd"] == '\\\\':
-            return parsed
-        # Add an actor
-        parsed["body"] = "%s%s" % (actor, parsed["body"])
+        if parsed['cmd'] and parsed['cmd'] != '\\\\':
+            parsed['body'] = "%s%s" % (actor, parsed['body'])
+        return parsed
+
+    @staticmethod
+    def wrap_body(parsed=None, string=None):
+        """
+        Takes a dict provided by cls.parse and a string to wrap each side of
+        dict['body']
+        Returns the changed dictionary
+        """
+        if not string:
+            string = ''
+
+        if not parsed['cmd']:
+            parsed['body'] = "{wrapper}{message}{wrapper}".format(wrapper=string, message=parsed['body'])
         return parsed
 
 
@@ -80,6 +93,21 @@ class CmdPage(CmdPage):
     aliases = CmdPage.aliases + ['p', 'pages']
     arg_regex = r"\s.+|/.+|$"
 
+    def parse(self):
+        super(CmdPage, self).parse()
+        caller = self.caller
+
+        # Setup page and pages defaults to use /last and /list
+        if self.cmdstring != 'pages' and not self.args and not self.switches:
+            self.switches = ['last']
+        elif self.cmdstring == 'pages' and not self.switches:
+            self.switches = ['list']
+
+        # Setup page last paged to support MUSH shortcut 'page <msg>'
+        if self.lhs and not self.rhs:
+            self.rhs = self.lhs
+            self.lhs = None
+
     def func(self):
         """Implement function using the Msg methods"""
 
@@ -91,7 +119,7 @@ class CmdPage(CmdPage):
         # get last messages we've got
         pages_we_got = Msg.objects.get_messages_by_receiver(caller)
 
-        if 'last' in self.switches or ('pages' != self.cmdstring and not self.args and not self.switches):
+        if 'last' in self.switches:
             if pages_we_sent:
                 recv = ",".join(obj.key for obj in pages_we_sent[-1].receivers)
                 self.msg("You last paged |c%s|n: %s" % (recv, pages_we_sent[-1].message))
@@ -100,7 +128,7 @@ class CmdPage(CmdPage):
                 self.msg("You haven't paged anyone yet.")
                 return
 
-        if 'list' in self.switches or ('pages' == self.cmdstring and not self.rhs):
+        if 'list' in self.switches:
             pages = pages_we_sent + pages_we_got
             pages.sort(lambda x, y: cmp(x.date_created, y.date_created))
 
@@ -131,8 +159,7 @@ class CmdPage(CmdPage):
             return
 
         # We are sending. Build a list of targets
-
-        if (not self.lhs and self.rhs) or (self.lhs and not self.rhs):
+        if not self.lhs:
             # If there are no targets, then set the targets
             # to the last person we paged.
             if pages_we_sent:
@@ -159,15 +186,11 @@ class CmdPage(CmdPage):
             return
 
         header = "|wAccount|n |c%s|n |wpages:|n" % caller.key
-        # Handle non-mux page-last recipients style of 'page <msg>'
-        if self.lhs and not self.rhs:
-            message = self.lhs
-        else:
-            message = self.rhs
+        message = self.rhs
 
         # Handle supported inline poses
         parts = InlinePoseHelper.parse(message)
-        parts = InlinePoseHelper.add_actor(parts, caller.key)
+        parts = InlinePoseHelper.prefix_actor_to_body(parts, caller.key)
 
         message = parts['body']
 
@@ -176,8 +199,8 @@ class CmdPage(CmdPage):
                               receivers=recobjs)
 
         # Add wrapping punctuation
-        if not parts["cmd"]:
-            message = "'%s'" % message
+        parts = InlinePoseHelper.wrap_body(parts, "'")
+        message = parts['body']
 
         # tell the accounts they got a message.
         received = []
