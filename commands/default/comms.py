@@ -65,9 +65,19 @@ class InlinePoseHelper(object):
         if not string:
             string = ''
 
-        if not parsed['cmd']:
+        if parsed and InlinePoseHelper.is_speech(parsed):
             parsed['body'] = "{wrapper}{message}{wrapper}".format(wrapper=string, message=parsed['body'])
         return parsed
+
+    @staticmethod
+    def is_speech(parsed=None):
+        """
+        Determines if parsed['body'] is speech or not.
+        Returns True if body is speech.
+        """
+        if parsed and not parsed['cmd']:
+            return True
+        return False
 
 
 class CmdPage(CmdPage):
