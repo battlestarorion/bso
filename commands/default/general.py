@@ -3,7 +3,7 @@ General Character commands usually available to all characters.
 """
 from evennia.utils import utils, evtable
 from evennia.typeclasses.attributes import NickTemplateInvalid
-from evennia.commands.default.general import CmdNick, CmdPose
+from evennia.commands.default.general import CmdNick, CmdPose, CmdWhisper
 
 
 class AccountAwareCmdNick(CmdNick):
@@ -155,3 +155,71 @@ class CmdPose(CmdPose):
                                               from_obj=self.caller)
             return
         super(CmdPose, self).func()
+
+
+class CmdWhisper(CmdWhisper):
+    __doc__ = """
+    Speak privately as your character to another
+
+    Usage:
+      whisper <character> = <message>
+      whisper <char1>, <char2> = <message>
+      whisper <message>
+      whisper
+
+    Talk privately to one or more characters in your current location, without
+    others in the room being informed.
+
+    If characters are not given, the message is sent to the last character(s)
+    whispered.
+
+    If no arguments are given, then the command shows you which character(s) 
+    where whispered to.
+    """
+
+    def parse(self):
+        super(CmdWhisper, self).parse()
+        caller = self.caller
+
+        # If using the whisper to last whispered format
+        if self.lhs and not self.rhs:
+            last_recievers = caller.ndb.last_whisper_recievers
+            if last_recievers:
+                self.rhs = self.lhs
+                self.lhs = last_recievers
+
+    def func(self):
+        """Run the whisper command"""
+
+        caller = self.caller
+        last_recievers = caller.ndb.last_whisper_recievers
+
+        if not self.args:
+            msg = "You last whispered to {recipients}.".format(recipients="|yno one|n" if not last_recievers else
+            "|c%s|n" % last_recievers)
+            self.msg(msg)
+            return
+
+        if not self.lhs or not self.rhs:
+            caller.msg("Usage: whisper <character> = <message>")
+            return
+
+        receivers = [recv.strip() for recv in self.lhs.split(",")]
+
+        receivers = [caller.search(receiver) for receiver in receivers]
+        receivers = [recv for recv in receivers if recv]
+
+        speech = self.rhs
+        # If the speech is empty, abort the command
+        if not speech or not receivers:
+            return
+
+        # Store non-persistent receivers for re-using
+        caller.ndb.last_whisper_recievers = self.lhs
+
+        # Call a hook to change the speech before whispering
+        speech = caller.at_before_say(speech, whisper=True, receivers=receivers)
+
+        # no need for self-message if we are whispering to ourselves (for some reason)
+        msg_self = None if caller in receivers else True
+        say = caller.at_say(speech, msg_self=msg_self, receivers=receivers, whisper=True)
