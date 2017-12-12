@@ -4,6 +4,7 @@ General Character commands usually available to all characters.
 from evennia.utils import utils, evtable
 from evennia.typeclasses.attributes import NickTemplateInvalid
 from evennia.commands.default.general import CmdNick, CmdPose, CmdWhisper
+from comms import InlinePoseHelper
 
 
 class AccountAwareCmdNick(CmdNick):
@@ -217,9 +218,17 @@ class CmdWhisper(CmdWhisper):
         # Store non-persistent receivers for re-using
         caller.ndb.last_whisper_recievers = self.lhs
 
+        parsed = InlinePoseHelper.parse(speech)
+        parsed = InlinePoseHelper.prefix_actor_to_body(parsed, caller.key)
+
         # Call a hook to change the speech before whispering
-        speech = caller.at_before_say(speech, whisper=True, receivers=receivers)
+        if InlinePoseHelper.is_speech(parsed):
+            parsed['body'] = caller.at_before_say(parsed['body'], whisper=True, receivers=receivers)
+
+        parsed = InlinePoseHelper.wrap_body(parsed, "'")
+        speech = parsed['body']
 
         # no need for self-message if we are whispering to ourselves (for some reason)
-        msg_self = None if caller in receivers else True
-        say = caller.at_say(speech, msg_self=msg_self, receivers=receivers, whisper=True)
+        msg_self = None if caller in receivers else '{self} whisper to {all_receivers}: {speech}'
+        msg_receivers = '{object} whispers: {speech}'
+        say = caller.at_say(speech, msg_self=msg_self, receivers=receivers, msg_receivers=msg_receivers, whisper=True)
