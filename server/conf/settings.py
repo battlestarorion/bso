@@ -113,8 +113,16 @@ DEFAULT_CHANNELS = [
     {"key": "MudInfo",
      "aliases": "",
      "desc": "Connection log",
-     "locks": "control:perm(Developer);listen:perm(Admin);send:false()"}
+     "locks": "control:perm(Developer);listen:perm(Admin);send:false()"},
+    {"key": "ConnInfo",
+     "aliases": "",
+     "desc": "Connection log",
+     "locks": "control:perm(Developer);listen:all();send:false()"}
 ]
+
+# Extra optional channel for receiving connection messages ("<account> has (dis)connected").
+# While the MudInfo channel will also receieve this, this channel is meant for non-staffers.
+CHANNEL_CONNECTINFO = ["ConnInfo"]
 
 ######################################################################
 # Settings given in secret_settings.py override those in this file.
