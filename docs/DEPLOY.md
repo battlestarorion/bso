@@ -4,7 +4,7 @@ Evennia itself is handled via git repos separately on both local dev environment
 This goes over how to do things like deploy changes to an environment (staging or live), manage that environment (up or down) in relation to deployment, and a few best practices.
 
 ## Setup Local Dev Environment For Deployment
-1. Live Remot - `git remote add live ssh://username@thecryingbeard.com:/var/core/core.git`
+1. Live Remote - `git remote add live ssh://username@thecryingbeard.com:/var/core/core.git`
 2. Staging Remote - `git remote add live ssh://username@thecryingbeard.com/var/core/staging.git`
 
 ## Ready to Deploy Checklist
@@ -17,6 +17,7 @@ This goes over how to do things like deploy changes to an environment (staging o
 ## Deploy
 1. git push staging master - Push your local master to staging
 2. git push live master - Push your local master to live
+(and for first time setup, run deploy_secrets.sh from the root game folder on your dev machine)
 
 ## Managing evennia on VPS
 Occasionally evennia might need some attention that requires someone to ssh into the VPS, especially since there is no automation around service failure, VPS reboots, etc.
