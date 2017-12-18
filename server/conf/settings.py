@@ -1,5 +1,7 @@
 """
-Evennia settings file.
+Base evennia settings file.  Settings here are used by all
+environments and hold development defaults.  Environment overrides are
+kept in staging.py and production.py
 
 The available options are found in the default settings file found
  here:
@@ -34,6 +36,8 @@ from evennia.settings_default import *
 # This is the name of your game. Make it catchy!
 SERVERNAME = "The Foxhole"
 
+DEBUG = True
+
 # Server ports. If enabled and marked as "visible", the port
 # should be visible to the outside world on a production server.
 # Note that there are many more options available beyond these.
@@ -64,9 +68,9 @@ AMP_PORT = 4006
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'evennia',
-        'USER': 'evennia',
-        'PASSWORD': 'AdventureTime05',
+        'NAME': 'foxhole',
+        'USER': 'foxhole',
+        'PASSWORD': 'test',
         'HOST': 'localhost',
         'PORT': ''    # use default
     }
