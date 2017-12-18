@@ -112,3 +112,7 @@ ENV/
 
 # evennia logs
 /logs
+
+# deployment secrets
+secret_settings.py
+
