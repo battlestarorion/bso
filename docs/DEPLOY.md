@@ -5,7 +5,13 @@ This goes over how to do things like deploy changes to an environment (staging o
 
 ## Setup Local Dev Environment For Deployment
 1. Live Remote - `git remote add live ssh://username@thecryingbeard.com:/var/core/core.git`
+  => will push to thecryingbeard.com:/var/telnet/thecryingbeard.com
 2. Staging Remote - `git remote add live ssh://username@thecryingbeard.com/var/core/staging.git`
+  => will push to thecryingbeard.com:/var/telnet/staging.thecryingbeard.com
+
+and in the vm project...
+3. Server Remote - `git remote add cloud ssh://username@thecryingbeard.com/var/core/vm.git`
+  => will push to thecryingbeard.com:/var/vm
 
 ## Ready to Deploy Checklist
 - Make sure the branch you are pushing (usually master) matches latest from the central github repo
@@ -17,6 +23,7 @@ This goes over how to do things like deploy changes to an environment (staging o
 ## Deploy
 1. git push staging master - Push your local master to staging
 2. git push live master - Push your local master to live
+3. (in vm repo) git push cloud master - Push your local vm master to the server
 (and for first time setup, run deploy_secrets.sh from the root game folder on your dev machine)
 
 ## Managing evennia on VPS
