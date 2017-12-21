@@ -4,14 +4,17 @@ Evennia itself is handled via git repos separately on both local dev environment
 This goes over how to do things like deploy changes to an environment (staging or live), manage that environment (up or down) in relation to deployment, and a few best practices.
 
 ## Setup Local Dev Environment For Deployment
-1. Live Remote - `git remote add live ssh://username@thecryingbeard.com:/var/core/core.git`
-  => will push to thecryingbeard.com:/var/telnet/thecryingbeard.com
-2. Staging Remote - `git remote add staging ssh://username@thecryingbeard.com/var/core/staging.git`
-  => will push to thecryingbeard.com:/var/telnet/staging.thecryingbeard.com
+1. Add Live Remote \
+`git remote add live ssh://username@thecryingbeard.com:/var/core/core.git` \
+ => will push to `thecryingbeard.com:/var/telnet/thecryingbeard.com`
+2. Add Staging Remote \
+`git remote add staging ssh://username@thecryingbeard.com/var/core/staging.git` \
+ => will push to `thecryingbeard.com:/var/telnet/staging.thecryingbeard.com`
 
 and in the vm project...
-3. Server Remote - `git remote add cloud ssh://username@thecryingbeard.com/var/core/vm.git`
-  => will push to thecryingbeard.com:/var/vm
+3. Add Server Remote \
+`git remote add cloud ssh://username@thecryingbeard.com/var/core/vm.git` \
+ => will push to `thecryingbeard.com:/var/vm`
 
 ## Ready to Deploy Checklist
 - Make sure the branch you are pushing (usually master) matches latest from the central github repo
@@ -21,9 +24,12 @@ and in the vm project...
 - If you have data model changes, do not forget to run `evennia makemigrations` locally, commit them to VCS, and then test and push these out to Staging and Live subsequently.
 
 ## Deploy
-1. git push staging master - Push your local master to staging
-2. git push live master - Push your local master to live
-3. (in vm repo) git push cloud master - Push your local vm master to the server
+1. Push your local master to staging \
+`git push staging master`
+2. Push your local master to live \
+`git push live master`
+3. Push your local vm master to the server - (in vm repo) \
+`git push cloud master` \
 (and for first time setup, run deploy_secrets.sh from the root game folder on your dev machine)
 
 ## Managing evennia on VPS
@@ -53,6 +59,7 @@ While sshed into VPS...
 or
 
 `byobu new-session -A -s evennia`
+
 This tries to attach to a session named `evennia`, and if it doesn't exist, it creates a new one called that.
 
 #### Verify evennia has started
