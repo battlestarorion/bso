@@ -6,7 +6,7 @@ This goes over how to do things like deploy changes to an environment (staging o
 ## Setup Local Dev Environment For Deployment
 1. Live Remote - `git remote add live ssh://username@thecryingbeard.com:/var/core/core.git`
   => will push to thecryingbeard.com:/var/telnet/thecryingbeard.com
-2. Staging Remote - `git remote add live ssh://username@thecryingbeard.com/var/core/staging.git`
+2. Staging Remote - `git remote add staging ssh://username@thecryingbeard.com/var/core/staging.git`
   => will push to thecryingbeard.com:/var/telnet/staging.thecryingbeard.com
 
 and in the vm project...
@@ -15,8 +15,8 @@ and in the vm project...
 
 ## Ready to Deploy Checklist
 - Make sure the branch you are pushing (usually master) matches latest from the central github repo
- - Do not forget to merge and push all changes first
- - Do not forget to pull/fetch
+  - Do not forget to merge and push all changes first
+  - Do not forget to pull/fetch
 - Follow this iterative cycle:  Implement locally > commit to branch on your fork > submit pull request to main repo > pass code review > process/integrate pull request to target branch > deploy to Staging > test > push Staging to Live > test
 - If you have data model changes, do not forget to run `evennia makemigrations` locally, commit them to VCS, and then test and push these out to Staging and Live subsequently.
 
