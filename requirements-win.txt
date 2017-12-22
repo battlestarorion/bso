@@ -1,0 +1,4 @@
+# Requirements for windows development.
+-r requirements.txt
+psycopg2 >= 2.7.3.2
+pypiwin32 >= 219

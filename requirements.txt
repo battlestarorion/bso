@@ -1,2 +1,1 @@
-psycopg2 >= 2.7.3.2
-pypiwin32 >= 219
+-e git+ssh://git@github.com/evennia-mush/evennia.git#egg=core-evennia
