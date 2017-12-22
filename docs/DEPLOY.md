@@ -1,5 +1,5 @@
 # Deployment
-Currently deployment is very quick and dirty.  We push code changes using local git remotes that point towards bare repositories that relay changes via post-receive hooks on the Staging/Live VPS (yes they are all on one) similar to https://www.digitalocean.com/community/tutorials/how-to-set-up-automatic-deployment-with-git-with-a-vps 
+Currently deployment is very quick and dirty.  We push code changes using local git remotes that point towards bare repositories that relay changes via post-receive hooks on the Staging/Live VPS (yes they are all on one) similar to [this tutorial](https://www.digitalocean.com/community/tutorials/how-to-set-up-automatic-deployment-with-git-with-a-vps). 
 Evennia itself is handled via git repos separately on both local dev environments and the VPS (bad).
 This goes over how to do things like deploy changes to an environment (staging or live), manage that environment (up or down) in relation to deployment, and a few best practices.
 
@@ -69,5 +69,5 @@ In the byobu-tmux session or in your main ssh login session...
 `ps -aux | evennia`
 
 ### Further Required Reading
-Check out https://github.com/evennia/evennia/wiki/Start-Stop-Reload to understand the right action to take for what you are trying to achieve.
+Check out [evennia server running documentation](https://www.github.com/evennia/evennia/wiki/Start-Stop-Reload) to understand the right action to take for what you are trying to achieve.
 It should hold the most up to date information about evennia process management that isn't bespoke to our VPS.
