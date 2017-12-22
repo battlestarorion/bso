@@ -1,1 +1,1 @@
--e git+ssh://git@github.com/evennia-mush/evennia.git#egg=core-evennia
+-e git+ssh://git@github.com/evennia-mush/evennia.git#egg=evennia
