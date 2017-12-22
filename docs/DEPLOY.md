@@ -47,7 +47,7 @@ While sshed into VPS...
 3. `byobu new-session -s evennia` - essentially tmux, a multi-plexer that allows you to start evennia and close your ssh session without leaving evennia processes in bad states.
 4. `workon evennia-mush` - activate virtualenv which has evennia installed
 5. `cd /var/telnet/[environment_target_root_path]` - `.../thecryingbeard.com` for live & `.../staging` for staging
-6. `evennia start > server/logs/server.log`
+6. `evennia start --settings [environment].py > server/logs/server.log` where environment is `staging` or `production`
 7. `Shift-F6` or `byobu detach` to detach tmux session and not logout
 
 #### Re-attach to first un-named Session
