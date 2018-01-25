@@ -12,6 +12,7 @@ This goes over how to do things like deploy changes to an environment (staging o
  => will push to `thecryingbeard.com:/var/telnet/staging.thecryingbeard.com`
 
 and in the vm project...
+
 3. Add Server Remote \
 `git remote add cloud ssh://username@thecryingbeard.com/var/core/vm.git` \
  => will push to `thecryingbeard.com:/var/vm`
