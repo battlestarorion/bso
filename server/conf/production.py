@@ -1,5 +1,6 @@
 """Settings for production environment."""
 from server.conf.settings import *
+from secret_settings import *
 
 ######################################################################
 # Evennia Database config
