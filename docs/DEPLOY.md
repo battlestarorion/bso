@@ -16,6 +16,7 @@ and in the vm project...
 3. Add Server Remote \
 `git remote add cloud ssh://username@thecryingbeard.com/var/core/vm.git` \
  => will push to `thecryingbeard.com:/var/vm`
+4. Put [`secret_settings.py`](https://drive.google.com/drive/folders/1qNwLlzumpnOC42BGg5G58wgBOYFlHXT7?usp=sharing) in `[root_game_folder]/server/conf/`
 
 ## Ready to Deploy Checklist
 - Make sure the branch you are pushing (usually master) matches latest from the central github repo
